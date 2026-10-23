@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <decisions>
+        <name>Is_Older_Than_90_Days</name>
+        <label>Closed More Than 90 Days Ago?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>Keep</defaultConnectorLabel>
+        <rules>
+            <name>Past_Retention</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Closed_Date__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue>
+                    <elementReference>Cutoff_Date</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mask_PII</targetReference>
+            </connector>
+            <label>Past Retention</label>
+        </rules>
+    </decisions>
+    <description>GDPR: daily job that masks end-customer PII on claims closed more than 90 days ago.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Cutoff_Date</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() - 90</expression>
+    </formulas>
+    <interviewLabel>Warranty Claim PII Masking {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Warranty Claim - GDPR PII Masking (90 days)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Mask_PII</name>
+        <label>Mask PII</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <inputAssignments>
+            <field>End_Customer_Name__c</field>
+            <value>
+                <stringValue>ANONYMIZED</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>End_Customer_Email__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PII_Masked__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Older_Than_90_Days</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>PII_Masked__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Warranty_Claim__c</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-10-24</startDate>
+            <startTime>02:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Warranty_Claim__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Warranty_Claim_Auto_Approval</members>
+        <members>Warranty_Claim_PII_Masking</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Warranty_Agents</members>
+        <name>Queue</name>
+    </types>
+    <types>
+        <members>Warranty_Agent</members>
+        <members>Partner_Claim_Submitter</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>62.0</version>
+</Package>

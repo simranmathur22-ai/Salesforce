@@ -1,0 +1,7 @@
+.sfdx/
+.sf/
+.localdevserver/
+node_modules/
+*.log
+.vscode/settings.json
+.env
